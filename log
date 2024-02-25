@@ -1,0 +1,88 @@
+2024-02-20 19:49:43 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:49:43 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:49:43 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:49:43 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:49:43 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:49:43 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:49:43 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [      OK       ]
+2024-02-20 19:49:46 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:49:46 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:49:46 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:49:46 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:49:46 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:49:46 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:49:46 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [      OK       ]
+2024-02-20 19:50:34 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:50:34 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:50:34 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:50:34 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:50:34 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:50:34 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:50:34 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [      OK       ]
+2024-02-20 19:53:22 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:53:22 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:53:22 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:53:22 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:53:22 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:53:22 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:53:22 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [OK]
+2024-02-20 19:53:36 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:53:36 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:53:36 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:53:36 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:53:36 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:53:36 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:53:36 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [      OK       ]
+2024-02-20 19:56:05 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:56:05 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:56:05 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:56:05 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:56:05 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:56:05 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:56:05 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [      OK       ]
+2024-02-20 19:56:41 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:56:41 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:56:41 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:56:41 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:56:41 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:56:41 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:56:41 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [    OK    ]
+2024-02-20 19:56:51 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:56:51 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:56:51 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:56:51 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:56:51 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:56:51 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:56:51 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [ OK  ]
+2024-02-20 19:57:07 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 19:57:07 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 19:57:07 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 19:57:07 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 19:57:07 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 19:57:07 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 19:57:07 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [  OK  ]
+2024-02-20 20:01:32 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 20:01:32 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 20:01:32 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 20:01:32 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 20:01:32 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 20:01:32 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 20:01:32 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [  OK  ]
+2024-02-20 20:06:54 - root - DEBUG - Namespace(config_file='/config/workspace/mg/mg.yaml', multigit_dir='.multigit', product_file=None, product_path=None, quiet=False, sync=True, verbose=False)
+2024-02-20 20:06:54 - root - DEBUG - Suppress git command output and display only final result: False
+2024-02-20 20:06:54 - subcommands.utils - DEBUG - Couldn't Find MultiGit directory in: /config/workspace
+2024-02-20 20:06:54 - subcommands.utils - DEBUG - Found MultiGit directory: /config/workspace
+2024-02-20 20:06:54 - subcommands.utils - DEBUG - Setting-up products path under: /config/workspace/.multigit/products
+2024-02-20 20:06:54 - subcommands.utils - DEBUG - Check/Create Product directory: /config/workspace/.multigit
+2024-02-20 20:06:54 - subcommands.executor - INFO - Running CMD (git fetch origin) in /config/workspace/.multigit/products
+Updating products repo https://github.com/vigneshpalanivelr/products...                             [  OK  ]

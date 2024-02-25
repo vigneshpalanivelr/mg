@@ -17,24 +17,17 @@ class outputFormatter():
     def __init__(self):
         # "{Part1:}[{:Part2^{width}}]".format("LeftAlignedText", "CenteredText", width=20)
         self.format_string = "{:100}[{:^{width}}]"
-        # Check if the termincal is connected to PuTTY
-        if sys.stdout.isatty():
-            self.ok_string = termcolor.colored('OK', 'green')
-            self.fail_string = termcolor.colored('FAIL', 'red')
-            self.error_string = termcolor.colored('ERROR', 'red')
-            self.display_width = 15
-        else:
-            self.ok_string = 'OK'
-            self.fail_string = 'FAIL'
-            self.error_string = 'ERROR'
-            self.display_width = 6
+        # Check if the termincal is connected to termial
+        terminal = sys.stdout.isatty()
+        
+        self.ok_string = termcolor.colored('OK', 'green') if terminal else 'OK'
+        self.fail_string = termcolor.colored('FAIL', 'red') if terminal else 'FAIL'
+        self.error_string = termcolor.colored('ERROR', 'red') if terminal else 'ERROR'
+        self.display_width = 15 if terminal else 6
 
     def format_result(self, message, success):
         """ Return the message and a success or failure result """
-        if success:
-            result = self.ok_string
-        else:
-            result = self.fail_string
+        result = self.ok_string if success else self.fail_string
         return self.format_string.format(message, result, width=self.display_width)
 
     def format_error(self, message):
@@ -46,19 +39,17 @@ class outputFormatter():
 logger = logging.getLogger(__name__)
 FORMATTER = outputFormatter()
 QUIET = False
+IGNORE_MISSING = False
 
-# In-Complete function
+
 def display_results(cmd, repo, info, out, err):
     """
     Display results from GIT Command execution
     """
     if not QUIET and info:
         print(info)
-        if os.getenv("DEBUG"):
-            print(cmd)
-    elif os.getenv("DEBUG"):
+    if os.getenv("DEBUG"):
         print(f"Ran in repo {repo}: {cmd}")
-
     if out:
         print(out)
     if err:
@@ -67,19 +58,15 @@ def display_results(cmd, repo, info, out, err):
         print()
 
 
-# In-Complete function
 def run(cmd, message, cwd=None, show_successful_output=True):
     """
     Run git command and display results in formatted output
     """
     success, out, err = True, None, None
     try:
-        logger.info(f"CMD {cwd}: {' '.join(cmd)}")
-        res = subprocess.run(cmd, cwd=cwd,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             check=True,
-                             universal_newlines=True)
+        logger.info(f"Running CMD: {' '.join(cmd)}")
+        res = subprocess.run(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                             check=True, universal_newlines=True)
     except subprocess.CalledProcessError as exc:
         result_string = FORMATTER.format_result(f"{message}", False)
         logger.error(f"FAILED: {message}")
