@@ -30,8 +30,11 @@ class Repo():
             self.config_file_repo = schema_dict['config_file_repo']
 
 
+    # In-Complete
     @staticmethod
     def get_repo_data(schema_data, products=None, repos=None, repo_urls=None):
+        """
+        """
         repo_data = []
         for prod in schema_data:
             if not products or prod['product'] in products:
@@ -39,4 +42,13 @@ class Repo():
                     if (not repos and not repo_urls) or repo['path'] in repos or repo["repo" in repo_urls]:
                         repo_data.append(Repo(repo))
         return repo_data
+    
+    @staticmethod
+    def get_repo_clone_paths(repo_data):
+        """
+        """
+        paths = set()
+        for repo in repo_data:
+            paths.add(repo.dest)
+        return list(paths)
 

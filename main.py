@@ -36,6 +36,10 @@ def parse_args():
     schema_group.add_argument('--schema-file', help="Provide schema file for repo information")
     schema_group.add_argument('--schema-path', help="Provide schema directory for cloning schema repo")
 
+    subparsers = parser.add_subparsers(dest="command", help="sub-command help")
+    init_parser = subparsers.add_parser('init')
+    init_parser.set_defaults(func = subcommands.init.run)
+
     return parser.parse_args()
 
 
@@ -83,6 +87,10 @@ def main():
 
     subcommands.executor.IGNORE_MISSING = (not args.require_all)
 
+    if args.func(args, repo_data):
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 print('',   )
 if __name__ == '__main__':
