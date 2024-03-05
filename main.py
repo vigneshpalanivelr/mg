@@ -19,7 +19,7 @@ def parse_args():
         return values.split(',')
     
     parser = argparse.ArgumentParser(description='Git Operations across multiple repos')
-    parser.add_argument('--config-file', default=os.path.join(sys.path[0], 'mg.yaml'),
+    parser.add_argument('--config-file', default=os.path.join(sys.path[0], 'mgit.yaml'),
                         help="Override default location of yaml config file")
     parser.add_argument('--multigit-dir', default='.multigit', help="schema directory to get repos")
     parser.add_argument('--quiet', action='store_true', default=False, help="Suppress the git command execution")
@@ -37,9 +37,8 @@ def parse_args():
     schema_group.add_argument('--schema-path', help="Provide schema directory for cloning schema repo")
 
     subparsers = parser.add_subparsers(dest="command", help="sub-command help")
-    init_parser = subparsers.add_parser('init')
-    init_parser.set_defaults(func = subcommands.init.run)
-
+    subparsers.add_parser('init').set_defaults(func = subcommands.init.run)
+    subcommands.clone.parse_args(subparsers.add_parser('clone'))
     return parser.parse_args()
 
 
@@ -49,7 +48,7 @@ def main():
     """
     args = parse_args()
 
-    log_level = logging.DEBUG
+    log_level = logging.INFO
     if args.verbose:
         log_level = logging.DEBUG
     formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -67,31 +66,31 @@ def main():
     subcommands.executor.QUIET = args.quiet
     logging.debug(f"Suppress git command output and display only final result: {subcommands.executor.QUIET}")
 
-    # Get MultiGit directory
+    # Find MultiGit directory
     if not args.schema_file and not args.schema_path:
         subcommands.utils.find_mgit(args.multigit_dir)
     
-    # Read all the Products data
+    # Read all the schema data and Exit if schema data is not present
     schema_data = subcommands.utils.get_schema_data(args.schema_file, args.schema_path, args.multigit_dir,
                                                     args.config, args.schema_branch, args.sync)
-    # Exit if schema data is not present
     if not schema_data:
         logging.error("Couldn't load schema, try updating schema using --sync option")
         sys.exit(3)
     
+    # Read repository data from schema
     repo_data = subcommands.Repo.get_repo_data(schema_data, args.products, args.repos, args.repo_urls)
     if not repo_data:
         logging.error(f"No schema defined for the product: {args.products} or product not matched")
         sys.exit(4)
     logging.debug(f"Successfully loaded schema data")
-
     subcommands.executor.IGNORE_MISSING = (not args.require_all)
 
+    # Execute commands
     if args.func(args, repo_data):
         sys.exit(0)
     else:
         sys.exit(1)
 
-print('',   )
+
 if __name__ == '__main__':
     main()

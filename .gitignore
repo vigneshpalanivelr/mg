@@ -163,4 +163,4 @@ cython_debug/
 ## Project Specific ignores
 .multigit
 PythonMaterials
-iNeuronFlaskChallenge/
+iNeuronFlaskChallenge

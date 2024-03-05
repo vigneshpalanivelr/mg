@@ -16,5 +16,5 @@ def run(args, repo_data):
     paths = subcommands.Repo.get_repo_clone_paths(repo_data)
     for path in paths:
         os.makedirs(path, exist_ok=True)
-    logger.debug(f"Repos that are created/present: {paths}")
+    logger.debug(f"Repos paths are created: {paths}")
     return subcommands.executor.run_in_repos(paths, cmd)

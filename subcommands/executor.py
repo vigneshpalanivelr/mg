@@ -38,7 +38,12 @@ class outputFormatter():
         """ Return the message and an error result """
         return self.format_string.format(message, self.error_string, width=self.display_width)
 
-# In-Complete
+
+def remove_non_ascii(text):
+    """ Remove non-ascii characters in the result """
+    return ''.join([i if ord(i) < 128 else ' ' for i in text])
+
+
 class RepoThread(threading.Thread):
     """ Thread class for running a single repo command and reporting the result """
     lock = threading.Lock()
@@ -57,6 +62,7 @@ class RepoThread(threading.Thread):
         """ Executes the command in the repo """
         try:
             start_time = datetime.now()
+            logger.debug(f"Running cmd: {self.command}")
             result = subprocess.run(self.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                     universal_newlines=True, encoding='utf-8', cwd=self.cwd)
             self.output = result.stdout
@@ -147,8 +153,7 @@ def run(cmd, message, cwd=None, show_successful_output=True):
     return success
 
 
-# In-Complete
-def run_in_repos(repos, cmd, parallel=True, change_dir=True, delay=None):
+def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
     """
         Run git command in the provided repos and display result for each repo.
         If additional args are provided, they must be a list of the same size as repos.
@@ -158,15 +163,18 @@ def run_in_repos(repos, cmd, parallel=True, change_dir=True, delay=None):
     result, threads = True, []
     thread_timing = []
     logger.debug(f"Parallel execution is: {parallel}")
+
+    repo_args = get_dynamic_args(repos, *args)
+
     for repo_num, repo in enumerate(repos):
-        torun = shlex.split(cmd)
+        torun = cmd.format(*repo_args[repo_num])
         if change_dir and not os.path.isdir(repo):
             # Ignore the fact that this workspace has not been cloned
             logger.warn("Ignore if the repos in workspace has not been cloned")
             continue
 
         if parallel:
-            thread = RepoThread(repo, torun, thread_timing, True, change_dir)
+            thread = RepoThread(repo, shlex.split(torun), thread_timing, True, change_dir)
             threads.append(thread)
             thread.start()
             if delay is not None:
@@ -184,3 +192,70 @@ def run_in_repos(repos, cmd, parallel=True, change_dir=True, delay=None):
     print()
     print(tabulate(thread_timing, headers=["Thread", "Start Time", "End Time", "Total Time (s)", "Status"], tablefmt="psql"))
     return result
+
+def get_dynamic_args(repos, *args):
+    """ Returns a structure of all the dynamic args """
+    repo_args = [[] for x in range(len(repos))]
+    for arg in args:
+        if not hasattr(arg, '__iter__') or len(repos) != len(arg):
+            raise ValueError("An argument is not a list of the correct length.")
+        for repo_num in range(len(repos)):
+            repo_args[repo_num].append(arg[repo_num])
+    return repo_args
+
+
+def get_data_from_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None, data=True):
+    """
+        Run git command in the provided repos and display result for each repo.
+        If additional args are provided, they must be a list of the same size as repos.
+        These additional args will be formatted into the command to run for each repo.
+        This allows the caller to choose slightly different commands to run in each repo.
+    """
+    result, threads = True, []
+    thread_timing = []
+    result = {'returncode': dict(), 'output': dict(), 'stderr': dict()}
+    logger.debug(f"Parallel execution is: {parallel}")
+
+    repo_args = get_dynamic_args(repos, *args)
+
+    for repo_num, repo in enumerate(repos):
+        torun = cmd.format(*repo_args[repo_num])
+        logger.debug(f"Running CMD in {repo}: {torun}")
+        if change_dir and not os.path.isdir(repo):
+            # Ignore the fact that this workspace has not been cloned
+            logger.warn("Ignore if the repos in workspace has not been cloned")
+            continue
+
+        if parallel:
+            thread = RepoThread(repo, shlex.split(torun), thread_timing, True, change_dir)
+            threads.append(thread)
+            thread.start()
+            if delay is not None:
+                time.sleep(delay)
+        else:
+            result &= run(torun, f"Executing in {repo}...", cwd=repo if change_dir else os.getcwd())
+
+    for thread in threads:
+        thread.join()
+        if data:
+            result['returncode'][thread.repo] = thread.returncode
+            result['output'][thread.repo] = thread.output
+            result['stderr'][thread.repo] = thread.stderr
+        else:
+            result &= (thread.returncode == 0)
+
+    if not result and not QUIET:
+        logger.error("Operation failed in some repo(s). Check details above.")
+    if not data:
+        print()
+        print(tabulate(thread_timing, headers=["Thread", "Start Time", "End Time", "Total Time (s)", "Status"], tablefmt="psql"))
+    return result
+
+
+def run_repo_cmds(cmds, step):
+    """ Runs all commands specified for repos from .mgit.yaml files """
+    for repo in cmds.keys():
+        logger.debug(f"Running {step} steps in {repo}:")
+        for cmd in cmds[repo]:
+            repo_dir = os.path.join(os.getcwd(), repo)
+            run(shlex.split(cmd), f'Executing {cmd}', cwd=repo_dir)

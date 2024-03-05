@@ -30,9 +30,8 @@ class Repo():
             self.config_file_repo = schema_dict['config_file_repo']
 
 
-    # In-Complete
     @staticmethod
-    def get_repo_data(schema_data, products=None, repos=None, repo_urls=None):
+    def get_repo_data(schema_data, products=None, repos=None, repo_urls=None, include_gitrefs=False):
         """
         """
         repo_data = []
@@ -41,14 +40,28 @@ class Repo():
                 for repo in prod['repos']:
                     if (not repos and not repo_urls) or repo['path'] in repos or repo["repo" in repo_urls]:
                         repo_data.append(Repo(repo))
+                if include_gitrefs:
+                    try:
+                        for repo in prod['gitrefs']:
+                            if (not repos and not repo_urls) or repo['path'] in repos or repo['repo'] in repo_urls:
+                                repo_data.append(Repo(repo))
+                    except KeyError:
+                        pass
         return repo_data
     
+    # Improved
     @staticmethod
     def get_repo_clone_paths(repo_data):
         """
         """
-        paths = set()
-        for repo in repo_data:
-            paths.add(repo.dest)
-        return list(paths)
+        return list({repo.dest for repo in repo_data})
 
+    # Yet to test
+    def create_link(self):
+        """ Check for the symlink entry and create it """
+        if self.symlink:
+            if isinstance(self.symlink, list):
+                for symlink in self.symlink:
+                    self.add_link(symlink)
+            else:
+                self.add_link(self.symlink)

@@ -115,7 +115,7 @@ def read_schema_data(schema_file):
         return yaml.safe_load(schema)
 
 
-# In-Complete
+# Optimized
 def get_schema_files(schema_path):
     """
     Loop through each directory and read schema files
@@ -143,7 +143,7 @@ def get_schema_data(schema_file, schema_path, multigit_dir, config, schema_branc
         schema_path = os.path.join(os.getcwd(), multigit_dir, "schema")
         logger.debug(f"Setting-up schema path under: {schema_path}")
     
-    # Clone/Fetch scheam repo if sync is set
+    # Clone/Fetch schema repo if sync is set
     if sync:
         logger.debug(f"Check/Create schema directory: {os.path.dirname(schema_path)}")
         os.makedirs(os.path.dirname(schema_path), exist_ok=True)
@@ -159,4 +159,96 @@ def get_schema_data(schema_file, schema_path, multigit_dir, config, schema_branc
         return None
     
     return get_schema_files(schema_path)
-    
+
+
+def get_ref_root(ref):
+    """ Return the root of the provided ref (everything up to and excluding the last slash) """
+    if ref:
+        branch_root = ref.rpartition('/')[0]
+        logger.debug(f"Found branch root for {ref}: {branch_root}")
+        return branch_root
+    return ''
+
+
+def replace_root(version, new_root, add_origin=False):
+    """ Replace the root of the branch with a new root from provided branch, optionally adding origin """
+    default = version
+    old_root = get_ref_root(version)
+    if old_root:
+        if new_root.startswith("origin"):
+            new_root = new_root[len("origin/"):]
+            add_origin = True
+        if new_root:
+            logger.debug(f"Old root {old_root} is replaced by new root {new_root}")
+            default = version.replace(old_root, new_root)
+
+    if add_origin and not default.startswith("origin/"):
+        return f"origin/{default}"
+    return default
+
+
+# In-Complete
+def find_lpm_branch_from_url(server, repo_data, branch, include_origin=False):
+    """ Find the longest-prefix-matching branch or root tag in all repos from a remote url"""
+    branch_root = get_ref_root(branch)
+
+    # Finding default branch using pre-fix
+    found_refs, default_branches = dict(), dict()
+    for repo in repo_data:
+        default_branches[repo.repo] = replace_root(repo.version, branch_root)
+    logger.debug(f"Found default branch: {default_branches}")
+    repos_remaining = list(default_branches.keys())
+
+    if branch:
+        branch_prefix = branch
+        single_chunk = check_develop = False
+
+        while repos_remaining and branch_prefix:
+            logger.debug(f"Trying to find longest-prefix-matching branch: {branch_prefix}")
+            if branch_prefix.startswith("refs/"):
+                cmd = f"git ls-remote --exit-code {server}{{}} {branch_prefix}"
+            else:
+                cmd = f"git ls-remote --exit-code {server}{{}} refs/heads/{branch_prefix} refs/tags/{branch_prefix}"
+
+            data = executor.get_data_from_repos(repos_remaining, cmd, repos_remaining, change_dir=False)
+            for repo, code in data['returncode'].items():
+                if code == 0:
+                    found_refs[repo] = branch_prefix
+                    repos_remaining.remove(repo)
+
+            repos_remaining = []
+            for repo, code in data['returncode'].items():
+                if code == 0:
+                    found_refs[repo] = branch_prefix
+                else:
+                    repos_remaining.append(repo)
+
+            if check_develop:
+                branch_prefix = branch_prefix.split("/")[0]
+                break
+
+            if single_chunk and branch_prefix not in ["origin", "next"]:
+                branch_prefix = f"{branch_prefix}/develop"
+                check_develop = True
+                continue
+            branch_prefix = ''.join(re.split('([/-])', branch_prefix)[:-2])
+            single_chunk = len(re.split('([/-])', branch_prefix)) == 1
+
+    for repo in repos_remaining:
+        found_refs[repo] = default_branches[repo]
+    return found_refs
+
+
+def get_repo_config(repo_data, key):
+    """ Gets data in key section from .mgit.yaml for all repos """
+    base_dir = os.getcwd()
+    data = {}
+    for repo in repo_data:
+        repo_path = os.path.join(base_dir, repo.dest)
+        yaml_path = os.path.join(repo_path, ".mgit.yaml")
+        if os.path.exists(yaml_path):
+            with open(yaml_path, 'r') as fstream:
+                mgit_yaml = yaml.safe_load(fstream)
+            if key in mgit_yaml:
+                data[repo.dest] = mgit_yaml[key]
+    return data
