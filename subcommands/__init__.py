@@ -6,3 +6,4 @@ import subcommands.executor
 from subcommands.repo import Repo
 import subcommands.init
 import subcommands.clone
+import subcommands.list

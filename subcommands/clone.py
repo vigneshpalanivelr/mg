@@ -3,6 +3,7 @@
 """
 Module for handling the mgit clone command, which can be used to clone multiple repos
 """
+
 import os
 import subcommands
 from subcommands import executor
@@ -14,11 +15,16 @@ logger = logging.getLogger(__name__)
 
 def parse_args(parser):
     """ Argument parsing for the clone command """
-    parser.add_argument('--depth', help="Create a shallow clone with a history truncated to the specified number of revisions")
-    parser.add_argument('--recursive', action='store_true', help="After clone, initialize all submodules with their default settings")
-    parser.add_argument('--no-checkout', '-n', action='store_true', help="Don't checkout HEAD after cloning")
-    parser.add_argument('--branch', help="Checkout the provided branch, or the longest-prefix matching branch")
-    parser.add_argument('--missing', action='store_true', help="Only clone missing repositories and ignore already-cloned repos")
+    parser.add_argument('--depth',
+                        help="Create a shallow clone with a history truncated to the specified number of revisions")
+    parser.add_argument('--recursive', action='store_true',
+                        help="After clone, initialize all submodules with their default settings")
+    parser.add_argument('--no-checkout', '-n', action='store_true',
+                        help="Don't checkout HEAD after cloning")
+    parser.add_argument('--branch',
+                        help="Checkout the provided branch, or the longest-prefix matching branch")
+    parser.add_argument('--missing', action='store_true',
+                        help="Only clone missing repositories and ignore already-cloned repos")
     parser.set_defaults(func=run)
 
 

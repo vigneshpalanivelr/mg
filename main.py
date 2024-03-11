@@ -21,16 +21,27 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Git Operations across multiple repos')
     parser.add_argument('--config-file', default=os.path.join(sys.path[0], 'mgit.yaml'),
                         help="Override default location of yaml config file")
-    parser.add_argument('--multigit-dir', default='.multigit', help="schema directory to get repos")
-    parser.add_argument('--quiet', action='store_true', default=False, help="Suppress the git command execution")
-    parser.add_argument('--sync', action='store_true', default=False, help="Synchronize the local schema path")
-    parser.add_argument('--verbose', action='store_true', default=False, help="Enable DEBUG logging for the script")
-    parser.add_argument('--schema-branch', default='next/develop', help="Branch for the schema repo to work with")
+    parser.add_argument('--multigit-dir', default='.multigit',
+                        help="schema directory to get repos")
+    parser.add_argument('--quiet', action='store_true', default=False,
+                        help="Suppress the git command execution")
+    parser.add_argument('--sync', action='store_true', default=False,
+                        help="Synchronize the local schema path")
+    parser.add_argument('--verbose', action='store_true', default=False,
+                        help="Enable DEBUG logging for the script")
+    parser.add_argument('--schema-branch', default='next/develop',
+                        help="Branch for the schema repo to work with")
     #parser.add_argument('--schema-branch', help="schema directory to get repos")
-    parser.add_argument('--products', default=[], type=list_str, help="Limit operations to repos related to the specified product(s) (comma-separated str)")
-    parser.add_argument('--repos', default=[], type=list_str, help="Limit operations to the specified repo clone path(s) (comma-separated str)")
-    parser.add_argument('--repo-urls', default=[], type=list_str, help="Limit operations to the specified repo url(s)(comma-separated str)")
-    parser.add_argument('--require-all', action='store_true', help="Attempt to run in all repos defined by the schema and fail if any workspace is missing.")
+    parser.add_argument('--products', default=[], type=list_str,
+                        help="Limit operations to repos related to the specified product(s) (comma-separated str)")
+    parser.add_argument('--repos', default=[], type=list_str,
+                        help="Limit operations to the specified repo clone path(s) (comma-separated str)")
+    parser.add_argument('--repo-urls', default=[], type=list_str,
+                        help="Limit operations to the specified repo url(s)(comma-separated str)")
+    parser.add_argument('--require-all', action='store_true',
+                        help="Attempt to run in all repos defined by the schema and fail if any workspace is missing.")
+    parser.add_argument('--include-gitrefs', action='store_true',
+                        help="Fetch results including gitrefs repo as well from schema")
 
     schema_group = parser.add_mutually_exclusive_group()
     schema_group.add_argument('--schema-file', help="Provide schema file for repo information")
@@ -39,6 +50,7 @@ def parse_args():
     subparsers = parser.add_subparsers(dest="command", help="sub-command help")
     subparsers.add_parser('init').set_defaults(func = subcommands.init.run)
     subcommands.clone.parse_args(subparsers.add_parser('clone'))
+    subcommands.list.parse_args(subparsers.add_parser('list'))
     return parser.parse_args()
 
 
@@ -78,7 +90,7 @@ def main():
         sys.exit(3)
     
     # Read repository data from schema
-    repo_data = subcommands.Repo.get_repo_data(schema_data, args.products, args.repos, args.repo_urls)
+    repo_data = subcommands.Repo.get_repo_data(schema_data, args.products, args.repos, args.repo_urls, args.include_gitrefs)
     if not repo_data:
         logging.error(f"No schema defined for the product: {args.products} or product not matched")
         sys.exit(4)

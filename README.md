@@ -1,13 +1,15 @@
 # lab-python
 
 Command to run main.py file:
-
 ```python main.py```<br>
+
+Configure workspace
+```
 pip freeze > mg/requirements.txt<br>
 pip install -r mg/requirements.txt
+```
 
-
-Git Commands
+## Git Commands
 ```
 # Config
 - git config --global user.email "vignesh.palanivelr@gmail.com"
@@ -49,6 +51,12 @@ Sparse Checkout - checking out only specific files or directories from a fully c
 
 # Remote commands
 git ls-remote --exit-code <url> refs/heads/mpe refs/tags/mpe
+```
+## Argparse
+```
+# Mutually exclusive group
+# If one argument from this group is provided, the others are automatically considered invalid
+parser.add_mutually_exclusive_group()
 ```
 
 Special Function used
