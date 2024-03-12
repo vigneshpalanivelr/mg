@@ -8,3 +8,4 @@ import subcommands.init
 import subcommands.clone
 import subcommands.list
 import subcommands.remote
+import subcommands.fetch

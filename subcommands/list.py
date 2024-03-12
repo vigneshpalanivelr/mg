@@ -29,7 +29,10 @@ def parse_args(parser):
 
 
 def filter_repos(repos, filter_cmd, success):
-    """ Filter the set of repos based on ones that succeed/fail a particular command """
+    """
+    Filter the set of repos based on ones that succeed/fail a particular command
+    Ex: mg/main.py list --filter-success "ls -ltra" --filter-success "ls"
+    """
     data = executor.get_data_from_repos(repos, filter_cmd)
     filtered_repos = set()
     for repo, code in data['returncode'].items():
@@ -76,7 +79,7 @@ def run(args, repo_data):
             result.add(repo.gitrefs_path)
         if not args.url and not args.gitrefs_path:
             logger.debug(f"Getting default output for 'list' command")
-            result.add(f"{args.config['server']}:{repo.repo} {repo.dest}")
+            result.add(f"{args.config['server']}{repo.repo} {repo.dest}")
     if args.dest:
         logger.debug("Enabled '--dest' in main command")
         result = repos
