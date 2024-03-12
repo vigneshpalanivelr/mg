@@ -68,7 +68,7 @@ def run(args, repo_data):
         if args.url:
             if repo.dest in repos:
                 logger.debug("Enabled '--url' in main command")
-                result.add(f"{args.config['server']}:{repo.repo}")
+                result.add(f"{args.config['server']}{repo.repo}")
         if not args.include_gitrefs:
                 logger.debug("Disabled 'include-gitrefs' in main command")
         elif args.gitrefs_path and repo.gitrefs_path:

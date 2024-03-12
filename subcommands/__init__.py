@@ -7,3 +7,4 @@ from subcommands.repo import Repo
 import subcommands.init
 import subcommands.clone
 import subcommands.list
+import subcommands.remote

@@ -1,21 +1,23 @@
-# lab-python
-
-Command to run main.py file:
+# Command Help
+Command to run
 ```python main.py```<br>
 
-Configure workspace
+# Configure workspace
 ```
-pip freeze > mg/requirements.txt<br>
+pip freeze > mg/requirements.txt
 pip install -r mg/requirements.txt
 ```
 
-## Git Commands
+# Git Commands
 ```
 # Config
 - git config --global user.email "vignesh.palanivelr@gmail.com"
 - git config --global user.name "Vignesh Palanivel"
+- git config remote.origin.url <url>
+- git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+- git config --get remote.origin.url
 
-# Find the references
+# Find the references in local and origin
 - git show-ref refs/heads/next/develop
 - git show-ref refs/remotes/next/develop
 - git show-refs refs/remotes/origin/next/develop
@@ -44,22 +46,27 @@ Sparse Checkout - checking out only specific files or directories from a fully c
 
 # Fetch - Retrieves changes but not update
 - git fetch origin
-# Fetch - Merge or Rebase
+# Fetch - Do the changes in local repo
 - git rebase
 # Pull Rebase - Fetch and Rebase your local workspace
 - git pull --rebase
 
 # Remote commands
-git ls-remote --exit-code <url> refs/heads/mpe refs/tags/mpe
+# List all your remote fetch/push URLs
+- git remote -v
+# Listing remote url/refs
+- git ls-remote --get-url
+- git ls-remote --exit-code <url> refs/heads/mpe refs/tags/mpe
+# 
 ```
-## Argparse
+# Argparse
 ```
 # Mutually exclusive group
 # If one argument from this group is provided, the others are automatically considered invalid
 parser.add_mutually_exclusive_group()
 ```
 
-Special Function used
+# Special Function
 ```
 # String Operations
 "PROD,INT".split(',')                   # Output: ['PROD', 'INT']

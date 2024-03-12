@@ -51,6 +51,7 @@ def parse_args():
     subparsers.add_parser('init').set_defaults(func = subcommands.init.run)
     subcommands.clone.parse_args(subparsers.add_parser('clone'))
     subcommands.list.parse_args(subparsers.add_parser('list'))
+    subcommands.remote.parse_args(subparsers.add_parser('remote'))
     return parser.parse_args()
 
 

@@ -62,7 +62,7 @@ class RepoThread(threading.Thread):
         """ Executes the command in the repo """
         try:
             start_time = datetime.now()
-            logger.debug(f"Running cmd: {self.command}")
+            logger.debug(f"Running CMD in {self.repo}: {' '.join(self.command)}")
             result = subprocess.run(self.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                     universal_newlines=True, encoding='utf-8', cwd=self.cwd)
             self.output = result.stdout
@@ -153,6 +153,19 @@ def run(cmd, message, cwd=None, show_successful_output=True):
     return success
 
 
+def get_dynamic_args(repos, *args):
+    """
+    Returns: List of list [[repo1], [repo2], []]
+    """
+    repo_args = [[] for x in range(len(repos))]
+    for arg in args:
+        if not hasattr(arg, '__iter__') or len(repos) != len(arg):
+            raise ValueError("An argument is not a list of the correct length.")
+        for repo_num in range(len(repos)):
+            repo_args[repo_num].append(arg[repo_num])
+    return repo_args
+
+
 def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
     """
         Run git command in the provided repos and display result for each repo.
@@ -165,9 +178,12 @@ def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
     logger.debug(f"Parallel execution is: {parallel}")
 
     repo_args = get_dynamic_args(repos, *args)
+    logger.debug(f"Structured args: {repo_args}")
 
     for repo_num, repo in enumerate(repos):
+        # Content of list of list "*repo_args[repo_num]" and do string formatting
         torun = cmd.format(*repo_args[repo_num])
+
         if change_dir and not os.path.isdir(repo):
             # Ignore the fact that this workspace has not been cloned
             logger.warn("Ignore if the repos in workspace has not been cloned")
@@ -193,16 +209,6 @@ def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
     print(tabulate(thread_timing, headers=["Thread", "Start Time", "End Time", "Total Time (s)", "Status"], tablefmt="psql"))
     return result
 
-def get_dynamic_args(repos, *args):
-    """ Returns a structure of all the dynamic args """
-    repo_args = [[] for x in range(len(repos))]
-    for arg in args:
-        if not hasattr(arg, '__iter__') or len(repos) != len(arg):
-            raise ValueError("An argument is not a list of the correct length.")
-        for repo_num in range(len(repos)):
-            repo_args[repo_num].append(arg[repo_num])
-    return repo_args
-
 
 def get_data_from_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None, data=True):
     """
@@ -217,10 +223,12 @@ def get_data_from_repos(repos, cmd, *args, parallel=True, change_dir=True, delay
     logger.debug(f"Parallel execution is: {parallel}")
 
     repo_args = get_dynamic_args(repos, *args)
+    logger.debug(f"Structured args: {repo_args}")
 
     for repo_num, repo in enumerate(repos):
+        # Content of list of list "*repo_args[repo_num]" and do string formatting
         torun = cmd.format(*repo_args[repo_num])
-        logger.debug(f"Running CMD in {repo}: {torun}")
+
         if change_dir and not os.path.isdir(repo):
             # Ignore the fact that this workspace has not been cloned
             logger.warn("Ignore if the repos in workspace has not been cloned")
