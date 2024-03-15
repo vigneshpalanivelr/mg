@@ -9,3 +9,4 @@ import subcommands.clone
 import subcommands.list
 import subcommands.remote
 import subcommands.fetch
+import subcommands.pull
