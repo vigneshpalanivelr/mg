@@ -155,12 +155,14 @@ def run(cmd, message, cwd=None, show_successful_output=True):
 
 def get_dynamic_args(repos, *args):
     """
+    repos: List of repo destination dir
+    *args: List of List with branch, url, dest
     Returns: List of list [[repo1], [repo2], []]
     """
     repo_args = [[] for x in range(len(repos))]
     for arg in args:
         if not hasattr(arg, '__iter__') or len(repos) != len(arg):
-            raise ValueError("An argument is not a list of the correct length.")
+            raise ValueError(f"An argument {arg} is not a list of the correct length as {repos}")
         for repo_num in range(len(repos)):
             repo_args[repo_num].append(arg[repo_num])
     return repo_args
@@ -226,14 +228,14 @@ def get_data_from_repos(repos, cmd, *args, parallel=True, change_dir=True, delay
     logger.debug(f"Structured args: {repo_args}")
 
     for repo_num, repo in enumerate(repos):
-        # Content of list of list "*repo_args[repo_num]" and do string formatting
+        # Get content of list "*repo_args[repo_num]" and do string formatting
         torun = cmd.format(*repo_args[repo_num])
-
-        if change_dir and not os.path.isdir(repo):
+        
+        if change_dir and not os.path.isdir(repo) and IGNORE_MISSING:
             # Ignore the fact that this workspace has not been cloned
             logger.warn("Ignore if the repos in workspace has not been cloned")
             continue
-
+        
         if parallel:
             thread = RepoThread(repo, shlex.split(torun), thread_timing, True, change_dir)
             threads.append(thread)

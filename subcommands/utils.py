@@ -9,6 +9,7 @@ import logging
 import os
 import re
 import subprocess
+import json
 
 from subcommands import executor
 
@@ -216,13 +217,6 @@ def find_lpm_branch_from_url(server, repo_data, branch, include_origin=False):
                     found_refs[repo] = branch_prefix
                     repos_remaining.remove(repo)
 
-            repos_remaining = []
-            for repo, code in data['returncode'].items():
-                if code == 0:
-                    found_refs[repo] = branch_prefix
-                else:
-                    repos_remaining.append(repo)
-
             if check_develop:
                 branch_prefix = branch_prefix.split("/")[0]
                 break
@@ -236,6 +230,82 @@ def find_lpm_branch_from_url(server, repo_data, branch, include_origin=False):
 
     for repo in repos_remaining:
         found_refs[repo] = default_branches[repo]
+    logger.debug(f"Found refs: {found_refs}")
+    return found_refs
+
+
+# In-Complete
+def find_lpm_branch(repo_data, branch, server=None, include_origin=False):
+    """ Find the longest-prefix-matching branch in all repos
+        If ignoring missing repos, the set of repos returned may be different
+        from the set of repos passed in
+    """
+    branch_root = get_ref_root(branch)
+
+    # Finding default branch using pre-fix
+    found_refs, default_branches = dict(), dict()
+    for repo in repo_data:
+        default_branches[repo.dest] = replace_root(repo.version, branch_root, not include_origin)
+        if server:
+            default_branches[repo.repo] = replace_root(repo.version, branch_root, not include_origin)
+    logger.debug(f"Found default branch: {default_branches}")
+    repos_remaining = list(default_branches.keys())
+
+    if branch:
+        branch_prefix = branch
+        single_chunk = check_develop = False
+
+        while repos_remaining and branch_prefix:
+            logger.debug(f"Trying to find longest-prefix-matching branch: {branch_prefix}")
+            if branch_prefix.startswith("refs/"):
+                if server:
+                    cmd = f"git ls-remote --exit-code {server}{{}} {branch_prefix}"
+                else:
+                    cmd = f"git show-ref {branch_prefix}"
+            else:
+                if server:
+                    cmd = f"git ls-remote --exit-code {server}{{}} refs/heads/{branch_prefix} refs/tags/{branch_prefix}"
+                else:
+                    cmd = f"git show-ref refs/heads/{branch_prefix} refs/remotes/{branch_prefix} refs/tags/{branch_prefix}"
+
+            if include_origin:
+                cmd += f" refs/remotes/origin/{branch_prefix}"
+
+            if server:
+                data = executor.get_data_from_repos(repos_remaining, cmd, repos_remaining, change_dir=False)
+            else:
+                data = executor.get_data_from_repos(repos_remaining, cmd)
+                repos_remaining = []
+
+            print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+
+            for repo, code in data['returncode'].items():
+                if code == 0:
+                    found_refs[repo] = branch_prefix
+                    if server:
+                        repos_remaining.remove(repo)
+                elif not server:
+                    repos_remaining.append(repo)
+
+            if check_develop:
+                branch_prefix = branch_prefix.split("/")[0]
+                logger.error(f"Final branch prefix: {branch_prefix}")
+                break
+
+            if single_chunk and branch_prefix not in ["origin", "next"]:
+                branch_prefix = f"{branch_prefix}/develop"
+                check_develop = True
+                logger.debug(f"Branch prefix: {branch_prefix}")
+                logger.debug(f"Check develop: {check_develop}")
+                continue
+
+            branch_prefix = ''.join(re.split('([/-])', branch_prefix)[:-2])
+            single_chunk = len(re.split('([/-])', branch_prefix)) == 1
+
+    # Setting branch for failed repos
+    for repo in repos_remaining:
+        found_refs[repo] = default_branches[repo]
+    logger.debug(f"Found refs: {found_refs}")
     return found_refs
 
 
@@ -252,3 +322,58 @@ def get_repo_config(repo_data, key):
             if key in mgit_yaml:
                 data[repo.dest] = mgit_yaml[key]
     return data
+
+
+def validate_branch_name(repos, branch, check_remote_ref=True, check_origin=False):
+    """ Returns whether the branch name exists in any repo
+        check_remote_ref: if true, the branch is considered valid if it is a valid remote reference in any repo
+        check_origin: if true, the branch is considered valid if it exists on any remote repo named origin
+    """
+    logger.debug(f"Checking if the refernce {branch} is in branch...")
+    cmd = f"git show-ref refs/heads/{branch}"
+    if check_remote_ref:
+        cmd += f" refs/remotes/{branch}"
+    if check_origin:
+        cmd += f" refs/remotes/origin/{branch}"
+    data = executor.get_data_from_repos(repos, cmd)
+    return any(code == 0 for code in data['returncode'].values())
+
+
+def lookup_tag(repos, tag, force=False, check_origin=False):
+    """
+    Return the repos that have the provided tag
+    """
+    result = []
+    if tag.startswith("refs"):
+        cmd = f"git show-ref {tag}"
+    else:
+        cmd = f"git show-ref refs/tags/{tag}"
+    
+    logger.debug(f"Checking if the refernce {tag} is in tag...")
+    data = executor.get_data_from_repos(repos, cmd)
+    for repo, code in data['returncode'].items():
+        if code == 0:
+            result.append(repo)
+    return result
+
+
+def run_command_for_tag_or_branch(repos, repo_data, cmd, ref, force=False, check_origin=False):
+    """
+
+    """
+    # Determine if ref is tag or branch
+    repos_with_tag = lookup_tag(repos, ref)
+    if repos_with_tag:
+        # treat the ref as a tag, and restrict to only those repos with the tag
+        cmd = cmd.format(ref)
+        return executor.run_in_repos(repos_with_tag, cmd)
+    
+    # If not tag then treat source as branch
+    if not force and not validate_branch_name(repos, ref, check_origin=check_origin):
+        logger.error(f"Provided argument {ref} is not a valid tag or branch in any repo.")
+        return False
+    
+    branch_info = find_lpm_branch(repo_data, ref, include_origin=check_origin)
+    repos = branch_info.keys()
+    branch_arg = list(branch_info.values())
+    return executor.run_in_repos(repos, cmd, branch_arg)

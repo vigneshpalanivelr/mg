@@ -10,9 +10,9 @@ import subcommands
 def parse_args(parser):
     """ Argument parsing for the pull command """
     parser.add_argument('--depth',
-                        help="Fetch a history truncated to the specified number of revisions")
+                        help="pull a history truncated to the specified number of revisions")
     parser.add_argument('--recurse-submodules', dest='recursive', action='store_true',
-                        help="Recursively fetch all submodules within, using their default settings")
+                        help="Recursively pull all submodules within, using their default settings")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--ff', action='store_true',
                        help="Allow only fast-forward merges; equivalent to --ff-only")

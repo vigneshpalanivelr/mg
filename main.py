@@ -54,6 +54,7 @@ def parse_args():
     subcommands.remote.parse_args(subparsers.add_parser('remote'))
     subcommands.fetch.parse_args(subparsers.add_parser('fetch'))
     subcommands.pull.parse_args(subparsers.add_parser('pull'))
+    subcommands.tag.parse_args(subparsers.add_parser('tag'))
     return parser.parse_args()
 
 
