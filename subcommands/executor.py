@@ -170,6 +170,9 @@ def get_dynamic_args(repos, *args):
 
 def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
     """
+    repos: Repo directory list
+    cmd: Command to execute in each repo directory
+    args:
         Run git command in the provided repos and display result for each repo.
         If additional args are provided, they must be a list of the same size as repos.
         These additional args will be formatted into the command to run for each repo.
@@ -184,6 +187,7 @@ def run_in_repos(repos, cmd, *args, parallel=True, change_dir=True, delay=None):
 
     for repo_num, repo in enumerate(repos):
         # Content of list of list "*repo_args[repo_num]" and do string formatting
+        print(*repo_args[repo_num])
         torun = cmd.format(*repo_args[repo_num])
 
         if change_dir and not os.path.isdir(repo):

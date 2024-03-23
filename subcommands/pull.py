@@ -50,5 +50,4 @@ def run(args, repo_data):
         cmd += f" {args.upstream}"
         if args.source:
             cmd += f" {args.source}"
-
     return executor.run_in_repos(repos, cmd)

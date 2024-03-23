@@ -13,6 +13,7 @@ pip install -r mg/requirements.txt
 # Config
 - git config --global user.email "vignesh.palanivelr@gmail.com"
 - git config --global user.name "Vignesh Palanivel"
+- git config --global credential.helper store
 - git config remote.origin.url <url>
 - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
 - git config --get remote.origin.url
@@ -99,6 +100,13 @@ git pull --no-ff
 - git tag --list <REGEX-PATTERN>
 # Lists tags sorted by a specific key (authordate, creatordate, committerdate, refname, taggerdate).
 - git tag --sort <>
+
+# Push
+git push origin <TAG/BRANCH>
+git push --tags
+git push -f --tags
+git push origin --delete <TAG/BRANCH>
+
 
 # Submodule
 - git submodule foreach "git checkout master"

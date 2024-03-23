@@ -339,18 +339,25 @@ def validate_branch_name(repos, branch, check_remote_ref=True, check_origin=Fals
     return any(code == 0 for code in data['returncode'].values())
 
 
-def lookup_tag(repos, tag, force=False, check_origin=False):
+def lookup_tag_or_branch(repos, ref, tag_or_branch=None, check_origin=False, allow_remote_ref=True):
     """
     Return the repos that have the provided tag
     """
     result = []
-    if tag.startswith("refs"):
-        cmd = f"git show-ref {tag}"
-    else:
-        cmd = f"git show-ref refs/tags/{tag}"
-    
-    logger.debug(f"Checking if the refernce {tag} is in tag...")
+    if ref.startswith("refs"):
+        cmd = f"git show-ref {ref}"
+    elif tag_or_branch == 'tag':
+        cmd = f"git show-ref refs/tags/{ref}"
+    elif tag_or_branch == 'branch':
+        cmd = f"git show-ref refs/head/{ref}"
+        if allow_remote_ref:
+            cmd += f" refs/remotes/{ref}"
+        if include_origin:
+            cmd += f" refs/remotes/origin/{ref}"
+
+    logger.debug(f"Checking if the refernce {ref} is in {tag_or_branch}...")
     data = executor.get_data_from_repos(repos, cmd)
+    logger.debug(json.dumps(data, indent = 4) )
     for repo, code in data['returncode'].items():
         if code == 0:
             result.append(repo)
