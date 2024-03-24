@@ -13,10 +13,13 @@ pip install -r mg/requirements.txt
 # Config
 - git config --global user.email "vignesh.palanivelr@gmail.com"
 - git config --global user.name "Vignesh Palanivel"
-- git config --global credential.helper store
 - git config remote.origin.url <url>
 - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
 - git config --get remote.origin.url
+- git config core.sparseCheckout true
+- git config --global credential.helper store
+- git push <origin>
+- git credential-cache exit
 
 # Find the references in local and origin
 - git show-ref refs/heads/next/develop
@@ -109,6 +112,14 @@ git pull --no-ff
 
 # Clean
 - git clean -fdx
+
+# Checkout
+- git checkout -b <br>
+- git checkout -B <br>
+- git checkout --orphan <br>
+  echo <repo> >> <repo>/.git/info/sparse-checkout
+  git config core.sparseCheckout true
+
 
 # Submodule
 - git submodule foreach "git checkout master"

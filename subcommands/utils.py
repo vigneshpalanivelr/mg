@@ -369,7 +369,7 @@ def run_command_for_tag_or_branch(repos, repo_data, cmd, ref, force=False, check
 
     """
     # Determine if ref is tag or branch
-    repos_with_tag = lookup_tag(repos, ref)
+    repos_with_tag = lookup_tag_or_branch(repos, ref, tag_or_branch='tag')
     if repos_with_tag:
         # treat the ref as a tag, and restrict to only those repos with the tag
         cmd = cmd.format(ref)

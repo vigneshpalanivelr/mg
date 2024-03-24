@@ -13,3 +13,4 @@ import subcommands.pull
 import subcommands.tag
 import subcommands.push
 import subcommands.clean
+import subcommands.checkout
