@@ -26,7 +26,7 @@ def parse_args(parser):
     group.add_argument('--orphan', metavar='new_branch',
                        help="Create a new orphan branch new_branch, with no history")
     parser.add_argument('--sparse-paths',
-                        help="Check out onlt the paths that are specified in comma-separated")
+                        help="Check out only the paths that are specified in comma-separated")
     parser.add_argument('--rw-repos',
                         help="Enforce sparse checkout in these repos only")
     parser.add_argument('source', nargs='?',
@@ -39,6 +39,7 @@ def run(args, repo_data):
     if args.rw_repos:
         repos = list(set(repos) & set(args.rw_repos.split(',')))
         logger.debug(f"Sparsh checkout enabled repos: {', '.join(repos)}")
+    
     if args.sparse_paths:
         paths = "\n".join(args.sparse_paths.split(','))
         logger.debug(f"Sparsh Paths: {paths}")

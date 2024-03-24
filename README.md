@@ -114,12 +114,35 @@ git pull --no-ff
 - git clean -fdx
 
 # Checkout
+- git checkout <br>
+# This puts the repository in a "detached HEAD" state
+- git checkout <commit>
+# Discard changes in a specific file and revert it to the state in the index
+- git checkout -- <file>
+# Force checkout, discarding local modifications in the working directory
+- git checkout --force
 - git checkout -b <br>
-- git checkout -B <br>
-- git checkout --orphan <br>
+# Create a new branch starting from <start_point> or <remote branch> and switch to it
+- git checkout -b <br> <starting point / remote>
+# Sparsh checkout
   echo <repo> >> <repo>/.git/info/sparse-checkout
   git config core.sparseCheckout true
 
+# Reset
+# Resets the index to the current HEAD commit without changing the working directory.
+- git reset
+# Moves the branch pointer to <commit>, discarding all commits after <commit>
+- git reset <commit>
+# Moves the branch pointer to <commit> but leaves changes staged (in the index) and uncommitted
+- git reset --soft <commit>
+# Moves the branch pointer to <commit> and unstages changes, but leaves changes in the working directory.
+- git reset --mixed <commit>
+# Resets the index and the working directory to match the HEAD commit discarding all changes.
+- git reset --hard
+# Moves the branch pointer back <n> commits.
+- git reset HEAD~<n>
+# Moves the branch pointer back one commit.
+- git reset HEAD^
 
 # Submodule
 - git submodule foreach "git checkout master"

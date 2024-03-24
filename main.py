@@ -58,6 +58,7 @@ def parse_args():
     subcommands.push.parse_args(subparsers.add_parser('push'))
     subcommands.clean.parse_args(subparsers.add_parser('clean'))
     subcommands.checkout.parse_args(subparsers.add_parser('checkout'))
+    subcommands.reset.parse_args(subparsers.add_parser('reset'))
     return parser.parse_args()
 
 
