@@ -102,11 +102,13 @@ git pull --no-ff
 - git tag --sort <>
 
 # Push
-git push origin <TAG/BRANCH>
-git push --tags
-git push -f --tags
-git push origin --delete <TAG/BRANCH>
+- git push origin <TAG/BRANCH>
+- git push --tags
+- git push -f --tags
+- git push origin --delete <TAG/BRANCH>
 
+# Clean
+- git clean -fdx
 
 # Submodule
 - git submodule foreach "git checkout master"

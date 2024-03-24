@@ -12,3 +12,4 @@ import subcommands.fetch
 import subcommands.pull
 import subcommands.tag
 import subcommands.push
+import subcommands.clean
