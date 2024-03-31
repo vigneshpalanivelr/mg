@@ -277,7 +277,7 @@ def find_lpm_branch(repo_data, branch, server=None, include_origin=False):
                 data = executor.get_data_from_repos(repos_remaining, cmd)
                 repos_remaining = []
 
-            print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+            logger.debug(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
 
             for repo, code in data['returncode'].items():
                 if code == 0:
@@ -352,12 +352,12 @@ def lookup_tag_or_branch(repos, ref, tag_or_branch=None, check_origin=False, all
         cmd = f"git show-ref refs/head/{ref}"
         if allow_remote_ref:
             cmd += f" refs/remotes/{ref}"
-        if include_origin:
+        if check_origin:
             cmd += f" refs/remotes/origin/{ref}"
 
     logger.debug(f"Checking if the refernce {ref} is in {tag_or_branch}...")
     data = executor.get_data_from_repos(repos, cmd)
-    logger.debug(json.dumps(data, indent = 4) )
+    logger.debug(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
     for repo, code in data['returncode'].items():
         if code == 0:
             result.append(repo)

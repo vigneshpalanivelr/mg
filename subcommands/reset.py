@@ -7,6 +7,9 @@ Module for handling the mgit reset command, which sets the HEAD, working tree an
 import os
 from subcommands import executor
 import subcommands
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def parse_args(parser):

@@ -15,3 +15,4 @@ import subcommands.push
 import subcommands.clean
 import subcommands.checkout
 import subcommands.reset
+import subcommands.branch

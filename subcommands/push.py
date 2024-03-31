@@ -62,7 +62,7 @@ def run(args, repo_data):
                     populate_repo_sources(repo_sources, tag_repos, source)
                 else:
                     branch_repos = subcommands.utils.lookup_tag_or_branch(repos, ref, 'branch',
-                                                                          allow_remote_ref=False, include_origin=False)
+                                                                          allow_remote_ref=False, check_origin=False)
                     populate_repo_sources(repo_sources, branch_repos, source)
                     if not branch_repos:
                         logger.error(f"Reference {ref} is not a valid tag or branch in any repo")

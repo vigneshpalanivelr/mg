@@ -144,6 +144,18 @@ git pull --no-ff
 # Moves the branch pointer back one commit.
 - git reset HEAD^
 
+# Branch
+- git branch <>
+- git symbolic-ref HEAD
+- git branch -r
+- git branch -l
+- git branch -a
+- git branch -d <br1> <br2>
+- git branch -D <br1> <br2>
+- git branch -m <br_old> <br_new>
+- git branch -M <br_old> <br_new>
+- git for-each-ref --format '%(refname:short)' refs/heads/test*
+
 # Submodule
 - git submodule foreach "git checkout master"
 ```
